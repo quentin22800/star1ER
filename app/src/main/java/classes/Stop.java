@@ -5,14 +5,14 @@ package classes;
  */
 
 public class Stop {
-    private int stop_id;
+    private String stop_id;
     private String name;
     private String description;
     private Double latitude;
     private Double longitude;
     private boolean wheelchair_boarding;
 
-    public Stop(int stop_id, String name, String description, Double latitude, Double longitude, boolean wheelchair_boarding) {
+    public Stop(String stop_id, String name, String description, Double latitude, Double longitude, boolean wheelchair_boarding) {
         this.stop_id = stop_id;
         this.name = name;
         this.description = description;
@@ -21,11 +21,11 @@ public class Stop {
         this.wheelchair_boarding = wheelchair_boarding;
     }
 
-    public int getStop_id() {
+    public String getStop_id() {
         return stop_id;
     }
 
-    public void setStop_id(int stop_id) {
+    public void setStop_id(String stop_id) {
         this.stop_id = stop_id;
     }
 

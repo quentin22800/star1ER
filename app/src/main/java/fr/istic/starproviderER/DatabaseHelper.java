@@ -41,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     private static final String DATABASE_CREATE_TABLE_STOPS =
             "CREATE TABLE if not exists TABLE_STOPS" +
-                    "(stop_id integer primary key not null, " +
+                    "(stop_id text primary key not null, " +
                     StarContract.Stops.StopColumns.NAME + " text, "+
                     StarContract.Stops.StopColumns.DESCRIPTION + " text, "+
                     StarContract.Stops.StopColumns.LATITUDE + " numeric, " +
@@ -51,12 +51,14 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String DATABASE_CREATE_TABLE_STOP_TIMES =
             "CREATE TABLE if not exists TABLE_STOP_TIMES" +
                     "(" +
-                    StarContract.StopTimes.StopTimeColumns.TRIP_ID + " integer primary key not null, "+
+                    StarContract.StopTimes.StopTimeColumns.TRIP_ID + " integer not null, "+
                     StarContract.StopTimes.StopTimeColumns.ARRIVAL_TIME + " text, "+
                     StarContract.StopTimes.StopTimeColumns.DEPARTURE_TIME + " text, " +
                     StarContract.StopTimes.StopTimeColumns.STOP_ID + " integer, " +
                     StarContract.StopTimes.StopTimeColumns.STOP_SEQUENCE + " integer," +
+                    "PRIMARY KEY ("+ StarContract.StopTimes.StopTimeColumns.TRIP_ID + "," + StarContract.StopTimes.StopTimeColumns.STOP_ID + "," + StarContract.StopTimes.StopTimeColumns.STOP_SEQUENCE + "),"+
                     "FOREIGN KEY (stop_id) REFERENCES TABLE_STOPS(stop_id));";
+
 
     private static final String DATABASE_CREATE_TABLE_CALENDAR =
             "CREATE TABLE if not exists TABLE_CALENDAR" +

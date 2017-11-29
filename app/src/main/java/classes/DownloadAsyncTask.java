@@ -17,14 +17,18 @@ import java.net.URL;
 
 public class DownloadAsyncTask extends AsyncTask<String, Integer, byte[]> {
     private ProgressDialog dialog;
-    private String file;
     private Activity activity;
+    private final TaskListener taskListener;
 
-    public DownloadAsyncTask(Activity activity,
-                             String fileName) {
+
+    public interface TaskListener {
+        public void onFinished(byte[] result);
+    }
+
+    public DownloadAsyncTask(Activity activity, TaskListener listener) {
         this.dialog = new ProgressDialog(activity);
-        this.file = fileName;
         this.activity = activity;
+        this.taskListener = listener;
     }
 
     @Override
@@ -47,16 +51,9 @@ public class DownloadAsyncTask extends AsyncTask<String, Integer, byte[]> {
         if (dialog.isShowing()) {
             dialog.dismiss();
         }
-        try {
-            FileOutputStream outputStream =
-                    activity.openFileOutput(file, Context.MODE_PRIVATE);
-            outputStream.write(result);
-            outputStream.flush();
-            outputStream.close();
-
-        } catch (IOException e) {
+        if(this.taskListener != null) {
+            this.taskListener.onFinished(result);
         }
-
     }
 
     private byte[] downloadUrl(String myurl) {
