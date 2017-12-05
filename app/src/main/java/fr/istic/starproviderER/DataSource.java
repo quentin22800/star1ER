@@ -6,10 +6,15 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
 import classes.BusRoute;
 import classes.Calendar;
 import classes.Stop;
 import classes.StopTime;
+import classes.Trip;
 
 /**
  * Created by 17009495 on 21/11/17.
@@ -78,15 +83,63 @@ public class DataSource {
         }
     }
 
-    public boolean insertStopTime(StopTime stopTime)
+    public void insertStopTime(Collection<StopTime> collecStop)
+    {
+        Iterator<StopTime> it = collecStop.iterator();
+        String query = "INSERT INTO TABLE_STOP_TIMES VALUES";
+        int i = 0;
+        while(it.hasNext())
+        {
+            StopTime st = it.next();
+            if(i == 0){
+                query += "(" + st.getTrip_id() + ",'" + st.getArrival_time() + "','" + st.getDeparture_time() + "'," + st.getStop_id() + "," + st.getStop_sequence() +  ")";
+            }else
+            {
+                query += ",(" + st.getTrip_id() + ",'" + st.getArrival_time() + "','" + st.getDeparture_time() + "'," + st.getStop_id() + "," + st.getStop_sequence() +  ")";
+            }
+            i++;
+        }
+        query += ";";
+        database.execSQL(query);
+    }
+
+    public boolean insertTrip(Trip trip)
     {
         ContentValues values = new ContentValues();
-        values.put(StarContract.StopTimes.StopTimeColumns.STOP_ID, stopTime.getStop_id());
-        values.put(StarContract.StopTimes.StopTimeColumns.TRIP_ID, stopTime.getTrip_id());
-        values.put(StarContract.StopTimes.StopTimeColumns.ARRIVAL_TIME, stopTime.getArrival_time());
-        values.put(StarContract.StopTimes.StopTimeColumns.DEPARTURE_TIME, stopTime.getDeparture_time());
-        values.put(StarContract.StopTimes.StopTimeColumns.STOP_SEQUENCE, stopTime.getStop_sequence());
-        long res = database.insert("TABLE_STOP_TIMES",null, values);
+        values.put("trip_id", trip.getTrip_id());
+        values.put(StarContract.Trips.TripColumns.BLOCK_ID, trip.getBlock_id());
+        values.put(StarContract.Trips.TripColumns.DIRECTION_ID, trip.getDirection_id());
+        values.put(StarContract.Trips.TripColumns.HEADSIGN, trip.getHeadsign());
+        values.put(StarContract.Trips.TripColumns.ROUTE_ID, trip.getRoute_id());
+        values.put(StarContract.Trips.TripColumns.SERVICE_ID, trip.getService_id());
+        int IntWheelChair = (trip.isWheelchair_accessible()) ? 1 : 0;
+        values.put(StarContract.Trips.TripColumns.WHEELCHAIR_ACCESSIBLE, IntWheelChair);
+        long res = database.insert("TABLE_TRIPS",null, values);
+        if((int) res != -1){
+            return true;
+        }
+        else
+        {
+            Log.v("test", "insertion non reussie");
+            return false;
+        }
+    }
+
+    public boolean insertCalendar(Calendar calendar)
+    {
+        ContentValues values = new ContentValues();
+        values.put("service_id", calendar.getService_id());
+        values.put(StarContract.Calendar.CalendarColumns.MONDAY, calendar.getMonday());
+        values.put(StarContract.Calendar.CalendarColumns.TUESDAY, calendar.getTuesday());
+        values.put(StarContract.Calendar.CalendarColumns.WEDNESDAY, calendar.getWednesday());
+        values.put(StarContract.Calendar.CalendarColumns.THURSDAY, calendar.getThursday());
+        values.put(StarContract.Calendar.CalendarColumns.FRIDAY, calendar.getFriday());
+        values.put(StarContract.Calendar.CalendarColumns.SATURDAY, calendar.getSaturday());
+        values.put(StarContract.Calendar.CalendarColumns.SUNDAY, calendar.getSunday());
+        values.put(StarContract.Calendar.CalendarColumns.START_DATE, calendar.getStart_date());
+        values.put(StarContract.Calendar.CalendarColumns.END_DATE, calendar.getEnd_date());
+
+        long res = database.insert("TABLE_CALENDAR",null, values);
         if((int) res != -1){
             return true;
         }

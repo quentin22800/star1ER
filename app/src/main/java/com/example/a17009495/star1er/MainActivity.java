@@ -123,9 +123,14 @@ public class MainActivity extends AppCompatActivity {
                             case "stops.txt":
                                 ps.parseStop(fileEntry);
                                 break;
+                            case "trips.txt":
+                                ps.parseTrips(fileEntry);
+                                break;
                             case "stop_times.txt":
                                 ps.parseStopTime(fileEntry);
                                 break;
+                            case "calendar.txt":
+                                ps.parseCalendar(fileEntry);
                         }
                     }
                 }

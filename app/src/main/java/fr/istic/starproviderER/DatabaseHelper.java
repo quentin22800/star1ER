@@ -57,6 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                     StarContract.StopTimes.StopTimeColumns.STOP_ID + " integer, " +
                     StarContract.StopTimes.StopTimeColumns.STOP_SEQUENCE + " integer," +
                     "PRIMARY KEY ("+ StarContract.StopTimes.StopTimeColumns.TRIP_ID + "," + StarContract.StopTimes.StopTimeColumns.STOP_ID + "," + StarContract.StopTimes.StopTimeColumns.STOP_SEQUENCE + "),"+
+                    "FOREIGN KEY (trip_id) REFERENCES TABLE_TRIPS(trip_id),"+
                     "FOREIGN KEY (stop_id) REFERENCES TABLE_STOPS(stop_id));";
 
 

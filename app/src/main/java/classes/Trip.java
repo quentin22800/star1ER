@@ -10,10 +10,10 @@ public class Trip {
     private int service_id;
     private String headsign;
     private int direction_id;
-    private int block_id;
+    private String block_id;
     private boolean wheelchair_accessible;
 
-    public Trip(int trip_id, int route_id, int service_id, String headsign, int direction_id, int block_id, boolean wheelchair_accessible) {
+    public Trip(int trip_id, int route_id, int service_id, String headsign, int direction_id, String block_id, boolean wheelchair_accessible) {
         this.trip_id = trip_id;
         this.route_id = route_id;
         this.service_id = service_id;
@@ -63,11 +63,11 @@ public class Trip {
         this.direction_id = direction_id;
     }
 
-    public int getBlock_id() {
+    public String getBlock_id() {
         return block_id;
     }
 
-    public void setBlock_id(int block_id) {
+    public void setBlock_id(String block_id) {
         this.block_id = block_id;
     }
 
