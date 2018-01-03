@@ -224,7 +224,7 @@ public class Parses {
                     String[] StopTime = line.split(cvsSplitBy);
                     StopTime stopTime = new StopTime(Integer.valueOf(StopTime[0]), StopTime[1], StopTime[2], Integer.valueOf(StopTime[3]), Integer.valueOf(StopTime[4]));
                     collecStop.add(stopTime);
-                    if(j == 49)
+                    if(j == 499)
                     {
                         ds.insertStopTime(collecStop);
                         collecStop.clear();

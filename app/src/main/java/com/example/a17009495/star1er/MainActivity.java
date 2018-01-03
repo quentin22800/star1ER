@@ -1,19 +1,15 @@
 package com.example.a17009495.star1er;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,35 +20,36 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import classes.BusRoute;
 import classes.DownloadAsyncTask;
 import classes.Parses;
 import fr.istic.starproviderER.DataSource;
 
 public class MainActivity extends AppCompatActivity {
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+
     private DataSource ds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        int testDl = 0;
         super.onCreate(savedInstanceState);
-        this.deleteDatabase("star.db");
+        //this.deleteDatabase("star.db");
+        Intent current = getIntent();
+        if(current.getIntExtra("telechargement", 1) == 0)
+        {
+            testDl = 1;
+        }
+        else
+        {
+            Intent intent = new Intent(this, StarService.class);
+            startService(intent);
+        }
         setContentView(R.layout.activity_main);
 
         ds = new DataSource(getApplicationContext());
@@ -62,24 +59,16 @@ public class MainActivity extends AppCompatActivity {
         File fl = new File(filesDir, "jsonbases.json");
         boolean deleted = fl.delete();
 
-        if(deleted)
-        {
-            Log.v("test", "fichier delete");
-        }
-
         File flzip = new File(filesDir, "data.zip");
         boolean deletezip = fl.delete();
-
-        if(deletezip)
+        Toast.makeText(getApplicationContext(), String.valueOf(testDl), Toast.LENGTH_LONG).show();
+        if(testDl == 1)
         {
-            Log.v("test", "zip delete");
+            downloadFileFromWeb("https://data.explore.star.fr/explore/dataset/tco-busmetro-horaires-gtfs-versions-td/download/?format=json&timezone=Europe/Berlin");
         }
-
-        downloadFileFromWeb("https://data.explore.star.fr/explore/dataset/tco-busmetro-horaires-gtfs-versions-td/download/?format=json&timezone=Europe/Berlin");
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     public void DownloadZip(String url) {
@@ -133,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                                 ps.parseCalendar(fileEntry);
                         }
                     }
+                    Log.e("test", "Insertions finis");
                 }
             });
             task.execute(url);
@@ -160,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
                             outputStream.write(result);
                             outputStream.flush();
                             outputStream.close();
-                            Log.v("test", "Fin écriture");
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
@@ -196,44 +185,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("Main Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
-
     @Override
     public void onStart() {
         super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
 
     @Override
     public void onStop() {
         super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
-    }
-
-    public void ok(){
-        Log.i("ok","ok");
     }
 
     public static String convertStreamToString(InputStream is) throws Exception {
@@ -333,5 +292,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
-

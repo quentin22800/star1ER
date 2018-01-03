@@ -2,6 +2,7 @@ package fr.istic.starproviderER;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -21,7 +22,7 @@ import classes.Trip;
  */
 
 public class DataSource {
-    private SQLiteDatabase database;
+    public static SQLiteDatabase database;
     private DatabaseHelper dbHelper;
 
     public DataSource(Context context) {
@@ -43,6 +44,7 @@ public class DataSource {
 
     public boolean insertBusRoute(BusRoute bus)
     {
+        Log.v("db", "debut insertion BusRoute");
         ContentValues values = new ContentValues();
         values.put("route_id", bus.getRoute_id());
         values.put(StarContract.BusRoutes.BusRouteColumns.SHORT_NAME, bus.getShort_name());
@@ -57,13 +59,14 @@ public class DataSource {
         }
         else
         {
-            Log.v("test", "insertion non reussie");
+            Log.v("db", "insertion non reussie");
             return false;
         }
     }
 
     public boolean insertStops(Stop stop)
     {
+        Log.v("db", "debut insertion Stops");
         ContentValues values = new ContentValues();
         values.put("stop_id", stop.getStop_id());
         values.put(StarContract.Stops.StopColumns.DESCRIPTION, stop.getDescription());
@@ -78,7 +81,7 @@ public class DataSource {
         }
         else
         {
-            Log.v("test", "insertion non reussie");
+            Log.v("db", "insertion non reussie");
             return false;
         }
     }
@@ -101,10 +104,12 @@ public class DataSource {
         }
         query += ";";
         database.execSQL(query);
+        Log.v("insertime", "Insert StopTime");
     }
 
     public boolean insertTrip(Trip trip)
     {
+        Log.v("db", "debut insertion Trip");
         ContentValues values = new ContentValues();
         values.put("trip_id", trip.getTrip_id());
         values.put(StarContract.Trips.TripColumns.BLOCK_ID, trip.getBlock_id());
@@ -120,13 +125,14 @@ public class DataSource {
         }
         else
         {
-            Log.v("test", "insertion non reussie");
+            Log.v("db", "insertion non reussie");
             return false;
         }
     }
 
     public boolean insertCalendar(Calendar calendar)
     {
+        Log.v("db", "debut insertion Calendar");
         ContentValues values = new ContentValues();
         values.put("service_id", calendar.getService_id());
         values.put(StarContract.Calendar.CalendarColumns.MONDAY, calendar.getMonday());
@@ -145,7 +151,7 @@ public class DataSource {
         }
         else
         {
-            Log.v("test", "insertion non reussie");
+            Log.v("db", "insertion non reussie");
             return false;
         }
     }
