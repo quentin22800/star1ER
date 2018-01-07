@@ -5,11 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 
 import org.json.JSONArray;
@@ -24,13 +22,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import classes.DownloadAsyncTask;
 import classes.InsertThread;
-import classes.Parses;
 import fr.istic.starproviderER.DataSource;
 
 public class MainActivity extends AppCompatActivity {
@@ -63,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
 
         File flzip = new File(filesDir, "data.zip");
         boolean deletezip = fl.delete();
-        Toast.makeText(getApplicationContext(), String.valueOf(testDl), Toast.LENGTH_LONG).show();
         if(testDl == 1)
         {
             downloadFileFromWeb("https://data.explore.star.fr/explore/dataset/tco-busmetro-horaires-gtfs-versions-td/download/?format=json&timezone=Europe/Berlin");

@@ -48,6 +48,13 @@ public class StarProvider extends ContentProvider {
                 queryBuilder.setTables("TABLE_BUS_ROUTES");
                 Cursor cursor = queryBuilder.query(DataSource.database, projection, selection, selectionArgs, null, null, sortOrder);
                 return cursor;
+
+            case StarContract.Trips.CONTENT_TYPE :
+                SQLiteQueryBuilder queryBuilder4 = new SQLiteQueryBuilder();
+                queryBuilder4.setTables("TABLE_TRIPS");
+                Cursor cursor4 = queryBuilder4.query(DataSource.database, projection, selection, selectionArgs, null, null, sortOrder);
+                return cursor4;
+
             case StarContract.Stops.CONTENT_TYPE:
                 SQLiteQueryBuilder queryBuilder2 = new SQLiteQueryBuilder();
                 queryBuilder2.setTables("TABLE_STOPS");

@@ -95,10 +95,14 @@ public class InsertThread extends AsyncTask<String, Integer, Integer> {
                         ps.parseCalendar(fileEntry);
                         break;
                 }
-                mProgressDialog.setProgress(i*20);
+                if(i != 5)
+                {
+                    mProgressDialog.setProgress(i*20);
+                }
                 i++;
             }
             Log.e("test", "Insertions finis");
+            mProgressDialog.setProgress(100);
             return 1;
         }
 
