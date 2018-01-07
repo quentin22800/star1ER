@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -34,6 +35,7 @@ public class DownloadAsyncTask extends AsyncTask<String, Integer, byte[]> {
     @Override
     protected void onPreExecute() {
         dialog.setMessage("Download in progress");
+        dialog.setMax(100);
         dialog.show();
     }
 
@@ -60,6 +62,7 @@ public class DownloadAsyncTask extends AsyncTask<String, Integer, byte[]> {
         DataInputStream open = null;
         try {
             URL url = new URL(myurl);
+            Log.v("testlog", "url");
             open = new DataInputStream(url.openStream());
             return readIt(open);
         } catch (Exception e) {

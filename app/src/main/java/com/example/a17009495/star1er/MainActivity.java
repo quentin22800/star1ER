@@ -1,5 +1,6 @@
 package com.example.a17009495.star1er;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -28,6 +29,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import classes.DownloadAsyncTask;
+import classes.InsertThread;
 import classes.Parses;
 import fr.istic.starproviderER.DataSource;
 
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         int testDl = 0;
         super.onCreate(savedInstanceState);
-        //this.deleteDatabase("star.db");
+        this.deleteDatabase("star.db");
         Intent current = getIntent();
         if(current.getIntExtra("telechargement", 1) == 0)
         {
@@ -66,9 +68,6 @@ public class MainActivity extends AppCompatActivity {
         {
             downloadFileFromWeb("https://data.explore.star.fr/explore/dataset/tco-busmetro-horaires-gtfs-versions-td/download/?format=json&timezone=Europe/Berlin");
         }
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
     }
 
     public void DownloadZip(String url) {
@@ -78,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         /*
         * il faut tester d’abord la connexion internet
         */
-
         if (networkInfo != null && networkInfo.isConnected()) {
             DownloadAsyncTask task = new DownloadAsyncTask(this, new DownloadAsyncTask.TaskListener() {
                 @Override
@@ -96,36 +94,19 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
-                    unZipIt(fl,filesDir);
-                    Parses ps = new Parses(ds);
-                    File f1 = new File(filesDir, "jsonbases.json");
-                    boolean deleted = f1.delete();
-                    File flzip = new File(filesDir, "data.zip");
-                    boolean deletezip = flzip.delete();
-                    for (final File fileEntry : filesDir.listFiles()) {
-                        switch (fileEntry.getName())
-                        {
-                            case "routes.txt":
-                                ps.parseRoute(fileEntry);
-                                break;
-                            case "stops.txt":
-                                ps.parseStop(fileEntry);
-                                break;
-                            case "trips.txt":
-                                ps.parseTrips(fileEntry);
-                                break;
-                            case "stop_times.txt":
-                                ps.parseStopTime(fileEntry);
-                                break;
-                            case "calendar.txt":
-                                ps.parseCalendar(fileEntry);
-                        }
-                    }
-                    Log.e("test", "Insertions finis");
                 }
             });
             task.execute(url);
+            InsertThread insertionThread = new InsertThread(MainActivity.this,getFilesDir(),ds, new InsertThread.TaskListener() {
+                @Override
+                public void onFinished(Integer result) {
+                    if(result ==1)
+                    {
+                        Log.v("test", "insertions finies");
+                    }
+                }
+            });
+            insertionThread.execute();
         } else {
             Log.e("download", "Connexion réseau indisponible.");
         }
@@ -238,57 +219,5 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
         return json;
-    }
-
-
-    /**
-     * Unzip it
-     * @param zipFile input zip file
-     * @param outputFolder zip file output folder
-     */
-    public void unZipIt(File zipFile, File outputFolder){
-        List<String> fileList;
-        byte[] buffer = new byte[1024];
-
-        try{
-
-            //create output directory is not exists
-            File folder = outputFolder;
-            if(!folder.exists()){
-                folder.mkdir();
-            }
-
-            //get the zip file content
-            ZipInputStream zis =
-                    new ZipInputStream(new FileInputStream(zipFile));
-            //get the zipped file list entry
-            ZipEntry ze = zis.getNextEntry();
-
-            while(ze!=null){
-
-                String fileName = ze.getName();
-                File newFile = new File(outputFolder + File.separator + fileName);
-                newFile.delete();
-                //create all non exists folders
-                //else you will hit FileNotFoundException for compressed folder
-                new File(newFile.getParent()).mkdirs();
-
-                FileOutputStream fos = new FileOutputStream(newFile);
-
-                int len;
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
-                }
-
-                fos.close();
-                ze = zis.getNextEntry();
-            }
-
-            zis.closeEntry();
-            zis.close();
-            Log.v("test","Unzip fini");
-        }catch(IOException ex){
-            ex.printStackTrace();
-        }
     }
 }
